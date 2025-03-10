@@ -1,0 +1,8 @@
+ansible_user: "{{ default.ansible_user }}"
+ansible_ssh_public_key: "{{ lookup('file', 'files/ansible.pub' ) }}"
+ansible_ssh_private_key_file: ~/.ssh/keys/ansible_access.key
+
+management_network: 172.16.31.0/24
+
+default:
+  ansible_user: ansible

@@ -1,0 +1,13 @@
+# - hosts:  switch-02
+#   roles:
+#     - detect_os  
+#   # tasks:
+#   #   - name: "Hello"
+#   #     ansible.builtin.debug:
+#   #       msg: "Hello there, {{ ansible_host }}"
+ - hosts: core-services
+   tasks:
+    - debug:
+        var: vars
+  #  roles:
+  #    - authenticate

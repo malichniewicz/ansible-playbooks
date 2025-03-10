@@ -1,0 +1,6 @@
+---
+platform: "mikrotik"
+
+ansible_connection: ansible.netcommon.network_cli
+ansible_facts_modules: community.routeros.facts
+ansible_network_os: routeros

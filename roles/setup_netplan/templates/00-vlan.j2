@@ -1,0 +1,20 @@
+# This is ansible managed block
+#
+# Any changes may be overwriten
+
+network:
+  version: 2
+  ethernets:
+{% for interface in vlan_interfaces %}
+    {{ interface }}:
+      dhcp4: no
+{% endfor %}
+  vlans:
+{% for vlan_config in vlans.values() %}
+{% for vlan_interface in vlan_config.interface %}
+    {{ vlan_interface }}.{{ vlan_config.id }}:
+      id: {{ vlan_config.id }}
+      link: {{ vlan_interface }}
+      dhcp4: yes
+{% endfor %}
+{% endfor %}

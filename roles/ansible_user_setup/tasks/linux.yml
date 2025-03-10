@@ -1,0 +1,30 @@
+# Setup ansible user on Ubuntu system
+# SSH key will be used for authentication, there is no password set for this account 
+---
+ - name: Add ansible user (Linux)
+   user:
+     name: "{{ default.ansible_user }}"
+     password: !
+     create_home: True
+     shell: /bin/bash
+   become: true
+ - name: Append pubkey to remote ansible account (Linux)
+   authorized_key:
+     user: "{{ default.ansible_user }}"
+     state: present
+     key: "{{ ansible_ssh_public_key }}"
+   become: true
+ - name: Add ansible user to sudoers file
+   community.general.sudoers:
+     name: ansible-sudo
+     user: "{{ default.ansible_user }}"
+     commands: ALL
+     nopassword: True
+     state: "present"
+   become: True
+ - name: Update user to newly created ansible user, if needed for further tasks in play
+   set_fact:
+     ansible_ssh_user: "{{ default.ansible_user }}"
+ - name: Verify facts using become
+   gather_facts:
+   become: True

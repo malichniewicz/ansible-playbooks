@@ -1,0 +1,27 @@
+# Setup ansible user on Mikrotik systems
+# SSH key will be used for authentication, however there will be additional password provided
+---
+ - name: "Copy public key"
+   ansible.netcommon.net_put:
+     src: "files/ansible.pub"
+     dest: "./flash/ansible.pub"
+ - name: "Setup ansible user"
+   community.routeros.command:
+     commands:
+      - /user/add name="{{ default.ansible_user }}" password="{{ default.ansible_password }}" group="full"
+      - /user/ssh-keys/import user="{{ default.ansible_user}}" public-key-file="./flash/ansible.pub"
+  #  when: false
+ - name: Setup user
+   set_fact:
+     ansible_ssh_user: "ansible"
+     ansible_ssh_password: "full"
+ - name: Update user to newly created ansible user, if needed for further tasks in play
+   set_fact:
+     ansible_ssh_user: "{{ default.ansible_user }}"
+ - name: Verify facts using become
+   gather_facts:
+   become: True
+ - name: Setup TFTP service to share the key across other devices
+   community.routeros.command:
+     commands: 
+      - /ip tftp add ip-addresses="{{ management_network }}" real-filename="flash/ansible.pub" req-filename="ansible.pub"

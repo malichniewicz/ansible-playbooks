@@ -1,0 +1,11 @@
+# Ansible vault password
+.vaultpass
+
+# Log files
+*.log
+
+# Python cache
+__pycache__
+
+# vscode files
+.vscode

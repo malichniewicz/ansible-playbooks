@@ -1,0 +1,4 @@
+ - hosts: services
+   gather_facts: true
+   roles:
+     - setup_netplan

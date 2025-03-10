@@ -1,0 +1,31 @@
+# Initial setup for further usage.
+# Add local SSH key and create the users on remote hosts (depends on the platform, may be SSH, or just
+# user/password pair)
+#
+# NOTE: some older devices will not supprort modern SSH key encryption algorithms, so RSA-based key 
+# is recommended to achieve the best compatibility.
+# Please also note that in some cases there may be not possible to setup SSH public key from the
+# command line using e.g. telnet, and you have to do it manually.
+---
+- hosts: localhost
+  tasks:
+  # Ensure that we have a key in proper local_action
+  - name: Check if key already exists
+    stat:
+      path: "{{ ansible_ssh_private_key_file }}"
+    register: ssh_key_file
+  - block:
+    - name: Create directory structure
+      file:
+        state: directory
+        path: "{{ ansible_ssh_private_key_file | dirname }}"
+        mode: 0700
+    - name: Copy SSH key
+      copy:
+        src: files/ansible.key
+        dest: "{{ ansible_ssh_private_key_file }}"
+        mode: 0600
+    when: not ssh_key_file.stat.exists
+- hosts: switch-01
+  roles:
+    - ansible_user_setup

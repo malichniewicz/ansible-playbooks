@@ -1,0 +1,30 @@
+# Setup ansible user on D-Link Metro Series switch
+# SSH access is available for this series of routers, including SSH key authentication, but with following
+# limitations:
+#  - no ed25519 keys (RSA should work)
+#  - public key have to be setup from UI or dowloaded from TFTP server (we're using router in this case)
+---
+ - name: "Setup user via telnet"
+   telnet:
+     user: "{{ default_user }}"
+     password: "{{ default_password }}"
+     commands: 
+      - "create account admin ansible\n\n"
+      - "enable ssh"
+      - "config ssh authmode ssh enable"
+      - "config ssh user ansible authmode publickey"
+      - "download ssh publickey 172.16.31.1 publickeyname ansible.pub"
+     login_prompt: "UserName: "
+     password_prompt: "Password: "
+     prompts:
+      - "#"
+      - "DGS-1210-20/ME:5# "
+ - name: Set username/password to default
+   set_fact:
+     ansible_ssh_user: "ansible"
+ - name: "Check SSH connection"
+   ansible.netcommon.cli_command: 
+     command: "show ipif"
+ - name: "Check failed command"
+   ansible.netcommon.cli_command:
+     command: "show"

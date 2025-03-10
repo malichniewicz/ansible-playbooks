@@ -1,0 +1,9 @@
+ - name: create a list of VLAN physical interfaces
+   set_fact:
+     vlan_interfaces: "{{ vlans | dict2items | map(attribute='value.interface') | flatten | unique }}"
+ - name: create netplan config
+   template: 
+     src: 00-vlan.j2
+     dest: /tmp/netplan_config
+   become: true
+

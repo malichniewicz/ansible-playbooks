@@ -1,0 +1,17 @@
+- hosts: services
+  gather_facts: False
+  tasks:
+    - name: gather facts
+      gather_facts:
+      when: ansible_user == 'ansible'
+    - name: update ansible user
+      set_fact:
+        ansible_user: 'ansible'
+    - block:
+      - name: gather facts again
+        gather_facts:
+      - name: print ansible user
+        ansible.builtin.debug:
+          msg: "Ansible user: {{ ansible_user }}"
+      become: yes
+      become_user: ansible

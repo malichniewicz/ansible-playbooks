@@ -1,0 +1,22 @@
+# Setup ansible user on remote
+# Force user/pass authentication and setup remote ansible user on the system, depends on the available
+# platform (user/key for Linux and Mikrotik, user/password for TP-Link and D-Link/ME, password on the
+# rest of supported systems)
+---
+# Force use of the username/password authentication
+ - name: Set username/password to defaults
+   set_fact:
+     ansible_ssh_user: "{{ default_user }}"
+     ansible_ssh_password: "{{ default_password }}"
+  #  when: false
+ - name: "Setup Linux system"
+   include_tasks: linux.yml
+   when: platform == "linux"
+
+ - name: "Setup Mikrotik devices"
+   include_tasks: mikrotik.yml
+   when: platform == "mikrotik"
+
+ - name: "Setup D-Link/ME series devices"
+   include_tasks: dlink-metro.yml
+   when: platform == "dlink-metro"

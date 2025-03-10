@@ -1,0 +1,4 @@
+services:
+  hosts:
+    core-services:
+      ansible_host: 172.16.31.2

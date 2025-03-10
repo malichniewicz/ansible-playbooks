@@ -1,0 +1,12 @@
+infrastructure:
+  hosts:
+    router:
+      ansible_host: 172.16.31.1
+    accesspoint-01:
+      ansible_host: 172.16.31.20
+    switch-01:
+      ansible_host: 172.16.31.10
+    switch-02:
+      ansible_host: 172.16.31.11
+    switch-03:
+      ansible_host: 172.16.31.12
