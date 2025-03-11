@@ -1,3 +1,8 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+
 # Initial setup for further usage.
 # Add local SSH key and create the users on remote hosts (depends on the platform, may be SSH, or just
 # user/password pair)

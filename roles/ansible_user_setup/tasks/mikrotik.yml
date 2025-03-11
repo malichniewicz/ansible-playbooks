@@ -1,3 +1,8 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+
 # Setup ansible user on Mikrotik systems
 # SSH key will be used for authentication, however there will be additional password provided
 ---

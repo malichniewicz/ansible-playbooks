@@ -1,3 +1,8 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+
 # Setup ansible user on remote
 # Force user/pass authentication and setup remote ansible user on the system, depends on the available
 # platform (user/key for Linux and Mikrotik, user/password for TP-Link and D-Link/ME, password on the

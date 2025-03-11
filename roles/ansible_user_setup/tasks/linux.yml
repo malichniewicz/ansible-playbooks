@@ -1,3 +1,8 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+
 # Setup ansible user on Ubuntu system
 # SSH key will be used for authentication, there is no password set for this account 
 ---

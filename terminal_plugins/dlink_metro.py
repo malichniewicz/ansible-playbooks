@@ -1,5 +1,9 @@
-from __future__ import absolute_import, division, print_function
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
 
+from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
