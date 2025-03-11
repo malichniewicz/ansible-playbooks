@@ -30,6 +30,6 @@
  - name: "Check SSH connection"
    ansible.netcommon.cli_command: 
      command: "show ipif"
- - name: "Check failed command"
-   ansible.netcommon.cli_command:
-     command: "show"
+ - name: "Print debug information"
+   debug:
+     var: network_os
