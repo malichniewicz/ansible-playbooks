@@ -7,11 +7,11 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-import os
 import re
 
 from ansible.errors import AnsibleConnectionFailure
-from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import TerminalBase
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import \
+    TerminalBase
 
 
 class TerminalModule(TerminalBase):
@@ -26,14 +26,13 @@ class TerminalModule(TerminalBase):
 
     terminal_config_prompt = re.compile(r"^.+#$")
 
-    def _exec_cli_command(self, cmd, check_rc=True):
-        """
-        Executes the CLI command on the remote device and returns the output
-
-        :arg cmd: Byte string command to be executed
-        """
-        # TODO: handle paged output
-        retcode, stderr, stdout = self._connection.exec_command(cmd)
-        if b'CTRL+C ESC q Quit SPACE n Next Page ENTER Next Entry a ALL' in stdout:
-            self._connection.exec_command(b'q')
-        return retcode, stderr, stdout
+    def on_open_shell(self):
+        try:
+            # Disable paging. If not set, then D-Link switch may return only part of the
+            # response followed by prompt what to do next, e.g.
+            #   CTRL+C ESC q Quit SPACE n Next Page ENTER Next Entry a ALL
+            # This flag have to be set once and is persistent, however we cannot rely
+            # that this is present and we want to be sure.
+            self._exec_cli_command('disable clipaging')
+        except AnsibleConnectionFailure:
+            raise AnsibleConnectionFailure('unable to set terminal parameters')
