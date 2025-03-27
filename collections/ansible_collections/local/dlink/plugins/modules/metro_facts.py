@@ -92,9 +92,70 @@ class Config(FactsBase):
             if match:
                 self.facts['config'] = match.group(1)
 
+class Hardware(FactsBase):
+    COMMANDS = [
+        'show flash information',
+        # Command: show flash information
+
+        # Flash ID    : MX25L25635E
+        # Flash size  : 32MB
+
+        # Partition      Used           Available      Use%
+        # Boot           1310720        0              0
+        # Image1         13471776       684000         95
+        # Image2         12701728       1454048        89
+        # FileSystem     323584         3608576        8
+        'top',
+        # Command: top
+        # Mem: 108880K used, 2204K free, 0K shrd, 5456K buff, 27804K cached
+        # CPU:  3.4% usr  6.8% sys  0.0% nic 37.9% idle  0.0% io  0.0% irq 51.7% sirq
+        # Load average: 1.79 1.66 1.61 2/123 690
+        # ...
+    ]
+
+    def populate(self):
+        super(Hardware, self).populate()
+        data = self.responses[0]
+        if data:
+            self.facts['flash_id'] = self.parse_flash_id(data)
+            self.facts['flash'] = self.parse_flash_details(data)
+
+    def parse_flash_id(self, data):
+        match = re.search(r'^Flash ID\s*:\s*(.+)$', data, re.M)
+        if match:
+            return match.group(1)
+
+    def parse_flash_details(self, data):
+        header_found = False
+        flash_data = {}
+        for line in data.splitlines():
+            if header_found:
+                partition_details = line.split()
+                if len(partition_details) == 4:
+                    # Entry like
+                    # Boot           1310720        0              0
+                    flash_data[partition_details[0]] = {
+                        'used_bytes': int(partition_details[1]),
+                        'available_bytes': int(partition_details[2]),
+                        'total_bytes': int(partition_details[1]) + int(partition_details[2])
+                    }
+            elif re.match(r'^Partition\s*Used\s*Available\s*Use%\s*', line):
+                header_found = True
+        return flash_data
+
+    def parse_memfree(self, data):
+        pass
+
+    def parse_memtotal(self, data):
+        pass
+
+    def parse_cpu_load(self, data):
+        pass
+
 FACT_SUBSETS = dict(
     default=Default,
     config=Config,
+    hardware=Hardware
 )
 
 VALID_SUBSETS = frozenset(FACT_SUBSETS.keys())
