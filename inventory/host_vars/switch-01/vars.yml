@@ -8,5 +8,5 @@ platform: "dlink-metro"
 ansible_connection: ansible.netcommon.network_cli
 
 # ansible_ssh_extra_args: "-o 'HostKeyAlgorithms +ssh-rsa' -o 'Ciphers +3des-cbc' -o 'PreferredAuthentications password'"
-ansible_network_os: "dlink.metro.switch"
+ansible_network_os: "local.dlink.metro"
 # ansible_ssh_user: ansible

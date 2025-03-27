@@ -15,7 +15,7 @@ import re
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.six import iteritems
-from ansible_collections.dlink.metro.plugins.module_utils.switch import \
+from ansible_collections.local.dlink.plugins.module_utils.metro import \
     run_commands
 
 

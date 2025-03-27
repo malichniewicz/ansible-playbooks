@@ -3,8 +3,8 @@
 # This file is licensed under the MIT License.
 # See the LICENSE file in the repository root for more information.
 
-namespace: dlink
-name: metro
+namespace: local
+name: dlink
 version: 0.0.1
 readme: README.md
 authors:
@@ -14,4 +14,4 @@ license:
 - MIT
 tags: [network, switch, d-link]
 dependencies: {}
-repository: https://github.com/malichniewicz/ansible-playbooks/tree/main/collections/ansible_collections/dlink
+repository: https://github.com/malichniewicz/ansible-playbooks/tree/main/collections/ansible_collections/local/dlink
