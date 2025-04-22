@@ -2,5 +2,7 @@
 #
 # This file is licensed under the MIT License.
 # See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
 ---
 ansible_gather_facts: False

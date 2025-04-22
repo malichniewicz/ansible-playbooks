@@ -1,3 +1,10 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+---
 ansible_user: "{{ default.ansible_user }}"
 ansible_ssh_public_key: "{{ lookup('file', 'files/ansible.pub' ) }}"
 ansible_ssh_private_key_file: ~/.ssh/keys/ansible_access.key
