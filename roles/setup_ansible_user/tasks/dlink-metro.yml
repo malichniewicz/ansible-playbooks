@@ -2,6 +2,8 @@
 #
 # This file is licensed under the MIT License.
 # See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
 
 # Setup ansible user on D-Link Metro Series switch
 # SSH access is available for this series of routers, including SSH key authentication, but with following

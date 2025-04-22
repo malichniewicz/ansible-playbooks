@@ -2,6 +2,8 @@
 #
 # This file is licensed under the MIT License.
 # See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
 
 # Setup ansible user on Ubuntu system
 # SSH key will be used for authentication, there is no password set for this account 
@@ -26,6 +28,17 @@
      commands: ALL
      nopassword: True
      state: "present"
+   become: True
+ - name: Allow to use RSA keys
+   copy:
+     dest: /etc/ssh/ssh_config.d/01-rsa.conf
+     content: |
+      RSAAuthentication yes
+   become: True
+ - name: Restart SSH service
+   service:
+     name: ssh
+     state: restarted
    become: True
  - name: Update user to newly created ansible user, if needed for further tasks in play
    set_fact:
