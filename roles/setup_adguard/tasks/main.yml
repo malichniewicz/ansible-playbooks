@@ -22,13 +22,20 @@
    template:
      src: config.j2
      dest: /opt/adguardhome/conf/AdGuardHome.yaml
+   register: config_deployed
  - name: Deploy compose file
    copy:
      src: compose.yml
      dest: /opt/adguardhome/compose.yml
  - name: Run AdGuard home from compose file
    community.docker.docker_compose_v2:
-    project_src: /opt/adguardhome
+     project_src: /opt/adguardhome
+   register: adguard_running
+ - name: Restart AdGuard home if config changed
+   community.docker.docker_compose_v2:
+     project_src: /opt/adguardhome
+     state: restarted
+   when: config_deployed.changed and (not adguard_running.changed and not adguard_running.failed)
  - name: Setup internal DNS to AdGuard Home
    copy:
      dest: /etc/resolv.conf
