@@ -1,0 +1,38 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+
+ - name: Ensure we have defined outside DNS
+   copy:
+     dest: /etc/resolv.conf
+     content: nameserver 8.8.8.8
+ - name: Disable systemd-resolv service
+   systemd_service:
+     name: systemd-resolved
+     enabled: false
+     state: stopped
+ - name: Prepare Adguard config directory
+   file:
+     path: /opt/adguardhome/conf
+     state: directory
+ - name: Deploy Adguard config
+   template:
+     src: config.j2
+     dest: /opt/adguardhome/conf/AdGuardHome.yaml
+ - name: Deploy compose file
+   copy:
+     src: compose.yml
+     dest: /opt/adguardhome/compose.yml
+ - name: Run AdGuard home from compose file
+   community.docker.docker_compose_v2:
+    project_src: /opt/adguardhome
+ - name: Setup internal DNS to AdGuard Home
+   copy:
+     dest: /etc/resolv.conf
+     content: nameserver 127.0.0.1
+ - name: Check if DNS is working
+   debug:
+     msg: "Query for example.com: {{ lookup('dig', 'example.com', '@'+ansible_host, fail_on_error=True) }}"
