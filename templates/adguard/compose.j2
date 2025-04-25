@@ -13,7 +13,7 @@ services:
     ports:
       - 53:53/tcp # plain dns over tcp
       - 53:53/udp # plain dns over udp
-      - 172.16.31.2:3000:3000/tcp # initial setup web interface
+      - {{ ansible_host }}:3000:3000/tcp # web interface
     volumes:
       - ./conf:/opt/adguardhome/conf
       - ./work:/opt/adguardhome/work

@@ -8,5 +8,8 @@
  - hosts: core-dns
    gather_facts: true
    become: true
+   vars:
+     adguard_compose_file: adguard/compose.j2
+     adguard_config_file: adguard/config.j2
    roles:
      - setup_adguard

@@ -20,12 +20,13 @@
      state: directory
  - name: Deploy Adguard config
    template:
-     src: config.j2
+     src: "{{ adguard_config_file }}"
      dest: /opt/adguardhome/conf/AdGuardHome.yaml
    register: config_deployed
+   when: adguard_config_file is defined
  - name: Deploy compose file
-   copy:
-     src: compose.yml
+   template:
+     src: "{{ adguard_compose_file | default ('compose.j2') }}"
      dest: /opt/adguardhome/compose.yml
  - name: Run AdGuard home from compose file
    community.docker.docker_compose_v2:
@@ -35,7 +36,11 @@
    community.docker.docker_compose_v2:
      project_src: /opt/adguardhome
      state: restarted
-   when: config_deployed.changed and (not adguard_running.changed and not adguard_running.failed)
+   when: |
+    adguard_config_file is defined and 
+    config_deployed.changed and 
+    not adguard_running.changed and 
+    not adguard_running.failed
  - name: Setup internal DNS to AdGuard Home
    copy:
      dest: /etc/resolv.conf
