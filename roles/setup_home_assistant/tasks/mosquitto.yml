@@ -1,0 +1,40 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+---
+
+ - name: Prepare Mosquitto config directory
+   file:
+     path: /opt/mosquitto/config
+     state: directory
+ - name: Deploy mosquitto config
+   template:
+     src: "{{ mosquitto_config_file | default ('mosquitto_config.j2') }}"
+     dest: /opt/mosquitto/config/mosquitto.conf
+   register: config_deployed
+ - name: deploy mosquitto password file
+   copy:
+     src: "{{ mosquitto_password_file }}"
+     dest: /opt/mosquitto/config/password.txt
+   when: mosquitto_password_file is defined
+   register: password_deployed
+ - name: Deploy mosquitto compose file
+   template:
+     src: "{{ mosquitto_compose_file | default ('mosquitto_compose.j2') }}"
+     dest: /opt/mosquitto/compose.yml
+ - name: Run mosquitto from compose file
+   community.docker.docker_compose_v2:
+     project_src: /opt/mosquitto
+   register: mosquitto_running
+ - name: Restart mosquitto if config changed
+   community.docker.docker_compose_v2:
+     project_src: /opt/mosquitto
+     state: restarted
+   when: |
+    (mosquitto_config_file is defined or mosquitto_password_file is defined) and 
+    (config_deployed.changed or password_deployed.changed) and 
+    not mosquitto_running.changed and 
+    not mosquitto_running.failed

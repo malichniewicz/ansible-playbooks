@@ -5,11 +5,8 @@
 #
 # SPDX-License-Identifier: MIT
 ---
-services:
-  hosts:
-    core-services:
-      ansible_host: 172.16.31.2
-    core-dns:
-      ansible_host: 172.16.31.2
-    home-assistant:
-      ansible_host: 172.16.31.2
+ - hosts: home-assistant
+   gather_facts: true
+   become: true
+   roles:
+     - setup_home_assistant
