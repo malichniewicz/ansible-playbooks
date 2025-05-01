@@ -8,8 +8,32 @@
  - hosts: core-dns
    gather_facts: true
    become: true
-   vars:
-     adguard_compose_file: adguard/compose.j2
-     adguard_config_file: adguard/config.j2
+   pre_tasks:
+    - name: Ensure host has defined outside DNS
+      copy:
+        dest: /etc/resolv.conf
+        content: nameserver 8.8.8.8
+    - name: Disable systemd-resolv service
+      systemd_service:
+        name: systemd-resolved
+        enabled: false
+        state: stopped
    roles:
-     - setup_adguard
+     - role: setup_docker_compose
+       container_name: "adguard"
+       workspace: /opt/adguardhome
+       compose_file_template: adguard/compose.j2
+       dirs:
+        - /opt/adguardhome/conf
+       config_files:
+        - src: adguard/config.j2
+          dest: /opt/adguardhome/conf/AdGuardHome.yaml
+          type: template
+   post_tasks:
+    - name: Setup internal DNS to AdGuard Home
+      copy:
+        dest: /etc/resolv.conf
+        content: nameserver 127.0.0.1
+    - name: Check if DNS is working
+      debug:
+        msg: "Query for example.com: {{ lookup('dig', 'example.com', '@'+ansible_host, fail_on_error=True) }}"
