@@ -18,6 +18,7 @@
 #      dest: dest_1
 #    - src: source_2
 #      dest: dest_2
+#    - type: template
 
 ---
  - name: "{{ container_name }} // clear temporary flags for compose role"
