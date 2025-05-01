@@ -9,4 +9,16 @@
    gather_facts: true
    become: true
    roles:
-     - setup_home_assistant
+     - role: setup_docker_compose
+       container_name: "mosquitto"
+       workspace: /opt/mosquitto
+       compose_file: mosquitto/compose.yml
+       dirs:
+        - /opt/mosquitto/config
+       config_files:
+        - src: mosquitto/config.j2
+          dest: /opt/mosquitto/config/mosquitto.conf
+          type: template
+        - src: mosquitto/password.txt
+          dest: /opt/mosquitto/config/password.txt
+          type: file
