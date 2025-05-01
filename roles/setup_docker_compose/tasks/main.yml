@@ -48,9 +48,15 @@
    register: config_file_deployed
    when: config_files is defined and (item.type is not defined or item.type == "file")
  - name: "{{ container_name }} // deploy compose file"
-   template:
+   copy:
      src: "{{ compose_file }}"
      dest: "{{ (workspace, 'compose.yml') | path_join }}"
+   when: compose_file is defined
+ - name: "{{ container_name }} // deploy compose file template"
+   template:
+     src: "{{ compose_file_template }}"
+     dest: "{{ (workspace, 'compose.yml') | path_join }}"
+   when: compose_file_template is defined
  - name: "{{ container_name }} // run from compose file"
    community.docker.docker_compose_v2:
      project_src: "{{ workspace }}"
