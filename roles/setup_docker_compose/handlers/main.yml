@@ -1,0 +1,16 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+---
+ - name: "{{ container_name }} // restart"
+   listen: "container restart"
+   community.docker.docker_compose_v2:
+     project_src: "{{ workspace }}" 
+     state: restarted
+ - name: "{{ container_name }} // build"
+   listen: "container build"
+   community.docker.docker_compose_v2:
+     project_src: "{{ workspace }}"

@@ -16,14 +16,12 @@
 #   config_files:
 #    - src: source_1
 #      dest: dest_1
+#      type: template
 #    - src: source_2
 #      dest: dest_2
 #    - type: template
 
 ---
- - name: "{{ container_name }} // clear temporary flags for compose role"
-   set_fact:
-     config_changed: false
  - name: "{{ container_name }} // prepare workspace"
    file:
      path: "{{ workspace }}"
@@ -38,36 +36,26 @@
    template:
      src: "{{ item.src }}"
      dest: "{{ item.dest }}"
+   loop: "{{ config_files }}"
    when: config_files is defined and (item.type is defined and item.type == "template")
-   register: config_template_deployed
+   notify: "container restart"
  - name: "{{ container_name }} // deploy config files"
    copy:
      src: "{{ item.src }}"
      dest: "{{ item.dest }}"
    loop: "{{ config_files }}"
-   register: config_file_deployed
+   notify: "container restart"
    when: config_files is defined and (item.type is not defined or item.type == "file")
  - name: "{{ container_name }} // deploy compose file"
    copy:
      src: "{{ compose_file }}"
      dest: "{{ (workspace, 'compose.yml') | path_join }}"
    when: compose_file is defined
+   notify: "container build"
  - name: "{{ container_name }} // deploy compose file template"
    template:
      src: "{{ compose_file_template }}"
      dest: "{{ (workspace, 'compose.yml') | path_join }}"
    when: compose_file_template is defined
- - name: "{{ container_name }} // run from compose file"
-   community.docker.docker_compose_v2:
-     project_src: "{{ workspace }}"
-   register: container_running
- - name: "{{ container_name }} // restart if config changed"
-   community.docker.docker_compose_v2:
-     project_src: "{{ workspace }}" 
-     state: restarted
-   when: |
-    config_files is defined and 
-    (config_file_deployed.changed or config_template_deployed.changed) and 
-    not container_running.changed and 
-    not container_running.failed
+   notify: "container build"
    
