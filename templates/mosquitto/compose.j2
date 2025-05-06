@@ -11,3 +11,5 @@ services:
       - /opt/mosquitto/config:/mosquitto/config
       - /opt/mosquitto/data:/mosquitto/data
       - /opt/mosquitto/log:/mosquitto/log
+    post_start:
+      - command: mosquitto_passwd -b /mosquitto/config/password.txt {{ mqtt_user }} {{ mqtt_password }}

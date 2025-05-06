@@ -12,7 +12,7 @@
      - role: setup_docker_compose
        container_name: "mosquitto"
        workspace: /opt/mosquitto
-       compose_file: mosquitto/compose.yml
+       compose_file_template: mosquitto/compose.j2
        dirs:
         - /opt/mosquitto/config
        config_files:

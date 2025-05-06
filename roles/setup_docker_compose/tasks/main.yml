@@ -29,9 +29,9 @@
  - name: "{{ container_name }} // create additional directories"
    file:
      path: "{{ item }}"
+     state: directory
    loop: "{{ dirs }}"
-   register: additional_dirs
-   when: additional_dirs is defined
+   when: dirs is defined
  - name: "{{ container_name }} // deploy template config files"
    template:
      src: "{{ item.src }}"
