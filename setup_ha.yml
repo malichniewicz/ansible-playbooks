@@ -28,3 +28,7 @@
        compose_file_template: zigbee2mqtt/compose.j2
        dirs:
         - /opt/zigbee2mqtt/data
+       config_files:
+        - src: zigbee2mqtt/configuration.j2
+          dest: /opt/zigbee2mqtt/data/configuration.yaml
+          type: template

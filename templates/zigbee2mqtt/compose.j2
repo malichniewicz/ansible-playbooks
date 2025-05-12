@@ -12,11 +12,11 @@ services:
     image: ghcr.io/koenkk/zigbee2mqtt
     restart: unless-stopped
     volumes:
-     - ./data:/opt/zigbee2mqtt/data
+     - /opt/zigbee2mqtt/data:/app/data
      - /run/udev:/run/udev:ro
     ports:
      - 8080:8080
     environment:
      - TZ=Europe/Berlin
     devices:
-     - {{ zigbee_adapter }}:/dev/ttyACM0
+     - {{ zigbee_host_adapter }}:{{ zigbee_adapter }}

@@ -1,0 +1,16 @@
+version: 4
+mqtt:
+  base_topic: {{ mqtt_topic }}
+  server: mqtt://{{ hostvars["home-assistant"].ansible_host }}:1883
+  user: {{ mqtt_user }}
+  password: {{ mqtt_password }}
+serial:
+  port: {{ zigbee_adapter }}
+  adapter: ember
+  baudrate: 115200
+  rtscts: false
+frontend:
+  enabled: true
+  port: 8080
+homeassistant:
+  enabled: false

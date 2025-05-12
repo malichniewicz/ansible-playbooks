@@ -6,6 +6,9 @@
 # SPDX-License-Identifier: MIT
 ---
 mqtt_user: mqtt
+mqtt_topic: zigbee2mqtt
+
 # We can use something like "/dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20230505113057-if00"
 # However, with single adapter, we can just use /dev/ttyACM0
+zigbee_host_adapter: "/dev/ttyACM0"
 zigbee_adapter: "/dev/ttyACM0"
