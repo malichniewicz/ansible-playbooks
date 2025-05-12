@@ -1,0 +1,22 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+
+name: zigbee2mqtt
+
+services:
+  zigbee2mqtt:
+    image: ghcr.io/koenkk/zigbee2mqtt
+    restart: unless-stopped
+    volumes:
+     - ./data:/opt/zigbee2mqtt/data
+     - /run/udev:/run/udev:ro
+    ports:
+     - 8080:8080
+    environment:
+     - TZ=Europe/Berlin
+    devices:
+     - {{ zigbee_adapter }}:/dev/ttyACM0

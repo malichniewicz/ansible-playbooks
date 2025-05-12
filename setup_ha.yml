@@ -19,6 +19,12 @@
         - src: mosquitto/config.j2
           dest: /opt/mosquitto/config/mosquitto.conf
           type: template
-        - src: mosquitto/password.txt
+        - src: mosquitto/password.j2
           dest: /opt/mosquitto/config/password.txt
-          type: file
+          type: template
+     - role: setup_docker_compose
+       container_name: "zigbee2mqtt"
+       workspace: /opt/zigbee2mqtt
+       compose_file_template: zigbee2mqtt/compose.j2
+       dirs:
+        - /opt/zigbee2mqtt/data

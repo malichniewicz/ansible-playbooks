@@ -1,3 +1,10 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+
 name: mosquitto
 
 services:
@@ -11,5 +18,3 @@ services:
       - /opt/mosquitto/config:/mosquitto/config
       - /opt/mosquitto/data:/mosquitto/data
       - /opt/mosquitto/log:/mosquitto/log
-    post_start:
-      - command: mosquitto_passwd -b /mosquitto/config/password.txt {{ mqtt_user }} {{ mqtt_password }}
