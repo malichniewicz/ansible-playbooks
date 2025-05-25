@@ -32,3 +32,18 @@
         - src: zigbee2mqtt/configuration.j2
           dest: /opt/zigbee2mqtt/data/configuration.yaml
           type: template
+     - role: setup_docker_compose
+       container_name: "homeassistant"
+       workspace: /opt/homeassistant
+       compose_file_template: homeassistant/compose.j2
+       dirs:
+        - /opt/homeassistant/config
+        - /opt/homeassistant/config/automations.d
+        - /opt/homeassistant/config/scripts.d
+        - /opt/homeassistant/config/scenes.d
+        - /opt/homeassistant/config/packages.d
+       config_files:
+        - src: homeassistant/configuration.yaml
+          dest: /opt/homeassistant/config/configuration.yaml
+        - src: homeassistant/automations.d/bedroom_window_led.yaml
+          dest: /opt/homeassistant/config/automations.d/bedroom_window_led.yaml

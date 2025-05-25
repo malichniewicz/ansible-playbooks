@@ -1,0 +1,18 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+
+alias: bedroom_window_led
+description: 'Control window LED lights using main light switch'
+triggers:
+- trigger: state
+  entity_id:
+  - switch.bedroom_light_main_l2
+actions:
+- action: switch.toggle
+  target:
+    entity_id: switch.bedroom_light_led_l1
+mode: single
