@@ -16,3 +16,22 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
     restart: unless-stopped
+{% if exposed %}
+    # Expose container to Traefik
+    networks:
+      - {{ exposed_docker_network }}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homeassistant.rule=Host(`{{ dns_name }}`)"
+      - "traefik.http.routers.homeassistant.entrypoints=websecure"
+      - "traefik.http.routers.homeassistant.tls=true"
+      - "traefik.http.routers.homeassistant.tls.certresolver=letencrypt"
+      - "traefik.http.services.homeassistant.loadbalancer.server.port=8123"
+networks:
+  {{ exposed_docker_network }}:
+    name: {{ exposed_docker_network }}
+    external: true
+    ipam:
+      config:
+        - subnet: "{{ exposed_docker_network_subnet }}"
+{% endif %}

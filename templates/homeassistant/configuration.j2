@@ -18,3 +18,8 @@ homeassistant:
 automation: !include_dir_list automations.d
 script: !include_dir_list scripts.d
 scene: !include_dir_list scenes.d
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - {{ exposed_docker_network_subnet }}

@@ -1,0 +1,21 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+---
+ - hosts: core-services
+   gather_facts: true
+   become: true
+   roles:
+     - role: setup_docker_compose
+       container_name: "traefik"
+       workspace: /opt/traefik
+       compose_file_template: traefik/compose.j2
+       dirs:
+        - /opt/traefik/certs
+       config_files:
+        - src: traefik/traefik.j2
+          dest: /opt/traefik/traefik.yml
+          type: template

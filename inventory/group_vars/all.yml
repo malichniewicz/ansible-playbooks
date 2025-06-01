@@ -13,3 +13,7 @@ management_network: 172.16.31.0/24
 
 default:
   ansible_user: ansible
+
+# Shared variables, to be used across multiple playbooks
+exposed_docker_network: traefik
+exposed_docker_network_subnet: 172.23.0.0/16
