@@ -42,9 +42,12 @@
         - /opt/homeassistant/config/scripts.d
         - /opt/homeassistant/config/scenes.d
         - /opt/homeassistant/config/packages.d
+        - /opt/homeassistant/config/sensors.d
        config_files:
         - src: homeassistant/configuration.j2
           dest: /opt/homeassistant/config/configuration.yaml
           type: template
         - src: homeassistant/automations.d/bedroom_window_led.yaml
           dest: /opt/homeassistant/config/automations.d/bedroom_window_led.yaml
+        - src: homeassistant/sensors.d/nightstate.yaml
+          dest: /opt/homeassistant/config/sensors.d/nightstate.yaml

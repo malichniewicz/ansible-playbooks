@@ -1,0 +1,12 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+
+platform: template
+sensors:
+  nightstate:
+    friendly_name: Night State
+    value_template: "{% if is_state('sun.sun', 'below_horizon') %}1{% else %}0{% endif %}"
