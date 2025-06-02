@@ -17,3 +17,22 @@ services:
     volumes:
       - ./conf:/opt/adguardhome/conf
       - ./work:/opt/adguardhome/work
+{% if exposed %}
+    # Expose container to Traefik
+    networks:
+      - {{ exposed_docker_network }}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adguard.rule=Host(`{{ dns_name }}`)"
+      - "traefik.http.routers.adguard.entrypoints=websecure"
+      - "traefik.http.routers.adguard.tls=true"
+      - "traefik.http.routers.adguard.tls.certresolver=letencrypt"
+      - "traefik.http.services.adguard.loadbalancer.server.port=3000"
+networks:
+  {{ exposed_docker_network }}:
+    name: {{ exposed_docker_network }}
+    external: true
+    ipam:
+      config:
+        - subnet: "{{ exposed_docker_network_subnet }}"
+{% endif %}

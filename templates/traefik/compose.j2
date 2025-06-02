@@ -19,13 +19,20 @@ services:
       - CF_DNS_API_TOKEN={{ cloudflare_api_key }}
     ports:
       - 443:443 # HTTPS entryPoints
-      - 8090:8080 # Dashbaord WebGui
+      - 8090:8080 # Dashboard WebGui
     networks:
       - {{ exposed_docker_network }}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /opt/traefik/traefik.yml:/traefik.yml:ro
       - /opt/traefik/certs:/certs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`{{ dns_name.traefik }}`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=letencrypt"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
   tunnel:
     container_name: cloudflared-tunnel
     image: cloudflare/cloudflared

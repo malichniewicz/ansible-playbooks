@@ -20,3 +20,22 @@ services:
      - TZ=Europe/Berlin
     devices:
      - {{ zigbee_host_adapter }}:{{ zigbee_adapter }}
+{% if exposed %}
+    # Expose container to Traefik
+    networks:
+      - {{ exposed_docker_network }}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.zigbee2mqtt.rule=Host(`{{ dns_name.zigbee2mqtt }}`)"
+      - "traefik.http.routers.zigbee2mqtt.entrypoints=websecure"
+      - "traefik.http.routers.zigbee2mqtt.tls=true"
+      - "traefik.http.routers.zigbee2mqtt.tls.certresolver=letencrypt"
+      - "traefik.http.services.zigbee2mqtt.loadbalancer.server.port=8080"
+networks:
+  {{ exposed_docker_network }}:
+    name: {{ exposed_docker_network }}
+    external: true
+    ipam:
+      config:
+        - subnet: "{{ exposed_docker_network_subnet }}"
+{% endif %}
