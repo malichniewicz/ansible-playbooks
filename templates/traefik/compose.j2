@@ -18,7 +18,6 @@ services:
       - CF_API_EMAIL={{ cloudflare_api_email }}
       - CF_DNS_API_TOKEN={{ cloudflare_api_key }}
     ports:
-      - 80:80 # HTTP entryPoints
       - 443:443 # HTTPS entryPoints
       - 8090:8080 # Dashbaord WebGui
     networks:
@@ -27,6 +26,15 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /opt/traefik/traefik.yml:/traefik.yml:ro
       - /opt/traefik/certs:/certs
+  tunnel:
+    container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    networks:
+      - {{ exposed_docker_network }}
+    environment:
+      - TUNNEL_TOKEN={{ cloudflare_tunnel_api_key }}
 networks:
   {{ exposed_docker_network }}:
     name: {{ exposed_docker_network }}
