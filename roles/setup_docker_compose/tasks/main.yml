@@ -22,22 +22,29 @@
 #    - type: template
 
 ---
+ - name: "{{ container_name }} // rebuild request"
+   debug:
+     msg: "Rebuild request for container {{ container_name }}"
+   when: rebuild is defined
+   notify: "container build"
+   changed_when: True
  - name: "{{ container_name }} // prepare workspace"
    file:
      path: "{{ workspace }}"
      state: directory
+   when: rebuild is not defined
  - name: "{{ container_name }} // create additional directories"
    file:
      path: "{{ item }}"
      state: directory
    loop: "{{ dirs }}"
-   when: dirs is defined
+   when: dirs is defined and rebuild is not defined
  - name: "{{ container_name }} // deploy template config files"
    template:
      src: "{{ item.src }}"
      dest: "{{ item.dest }}"
    loop: "{{ config_files }}"
-   when: config_files is defined and (item.type is defined and item.type == "template")
+   when: config_files is defined and (item.type is defined and item.type == "template") and rebuild is not defined
    notify: "container restart"
  - name: "{{ container_name }} // deploy config files"
    copy:
@@ -45,17 +52,17 @@
      dest: "{{ item.dest }}"
    loop: "{{ config_files }}"
    notify: "container restart"
-   when: config_files is defined and (item.type is not defined or item.type == "file")
+   when: config_files is defined and (item.type is not defined or item.type == "file") and rebuild is not defined
  - name: "{{ container_name }} // deploy compose file"
    copy:
      src: "{{ compose_file }}"
      dest: "{{ (workspace, 'compose.yml') | path_join }}"
-   when: compose_file is defined
+   when: compose_file is defined and rebuild is not defined
    notify: "container build"
  - name: "{{ container_name }} // deploy compose file template"
    template:
      src: "{{ compose_file_template }}"
      dest: "{{ (workspace, 'compose.yml') | path_join }}"
-   when: compose_file_template is defined
+   when: compose_file_template is defined and rebuild is not defined
    notify: "container build"
    
