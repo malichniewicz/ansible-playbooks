@@ -15,7 +15,7 @@
  - name: "Setup ansible user"
    community.routeros.command:
      commands:
-      - /user/add name="{{ default.ansible_user }}" password="{{ default.ansible_password }}" group="full"
+      - /user/add name="{{ default.ansible_user }}" password="{{ default.ansible_password }}" group="full" address="{{ management_network }}"
       - /user/ssh-keys/import user="{{ default.ansible_user}}" public-key-file="./flash/ansible.pub"
   #  when: false
  - name: Setup user
