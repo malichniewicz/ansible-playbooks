@@ -1,0 +1,25 @@
+# Copyright (c) 2026 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+---
+ - hosts: paperless
+   gather_facts: true
+   become: true
+   roles:
+     - role: setup_docker_compose
+       container_name: "paperless"
+       workspace: /opt/paperless
+       compose_file_template: paperless/compose.j2
+       dirs:
+        - /opt/paperless/redisdata
+        - /opt/paperless/data
+        - /opt/paperless/export
+        - /opt/paperless/media
+        - /opt/paperless/consume
+       config_files:
+        - src: paperless/paperless.env.j2
+          dest: /opt/paperless/paperless.env
+          type: template
