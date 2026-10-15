@@ -1,0 +1,27 @@
+# Copyright (c) 2026 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+
+alias: "MiBox main menu"
+id: mibox_menu_leds
+trigger:
+  - platform: template
+    value_template: >
+      {{ state_attr('remote.mitv_afmu0', 'current_activity') == 'com.google.android.apps.tv.launcherx' }}
+condition:
+  # MiBox musi być faktycznie włączony
+  - condition: template
+    value_template: >
+      {{ states('remote.mitv_afmu0') == 'on' }}
+action:
+  - service: light.turn_on
+    target:
+      entity_id: light.0xa4c1380207157e9a   # LED RGB
+    data:
+      rgb_color: [255, 190, 120]   # naturalnie ciepły, bez różu
+      brightness: 220
+      transition: 2
+mode: single

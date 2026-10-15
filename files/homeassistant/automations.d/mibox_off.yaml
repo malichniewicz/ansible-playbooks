@@ -1,0 +1,22 @@
+# Copyright (c) 2026 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+
+alias: "MiBox OFF"
+id: mibox_turns_off_projector
+trigger:
+  - platform: state
+    entity_id: remote.mitv_afmu0
+    from: "on"
+    to: "off"
+action:
+  - service: switch.turn_off
+    target:
+      entity_id: switch.0xa4c1383d537c5120
+  - service: light.turn_off
+    target:
+      entity_id: light.0xa4c1380207157e9a
+mode: single

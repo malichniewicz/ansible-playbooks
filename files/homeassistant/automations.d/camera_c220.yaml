@@ -1,0 +1,68 @@
+# Copyright (c) 2026 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+ 
+id: frigate_c220_recording
+alias: "Frigate C220 – motion triggered recording"
+trigger:
+  - platform: state
+    entity_id: binary_sensor.tapo_c220_27c1_cell_motion_detection_2
+    to: "on"
+condition:
+  - condition: not
+    conditions:
+      - condition: state
+        entity_id: camera.c220_ceiling
+        state: "idle"
+action:
+  - action: frigate.create_event
+    target:
+      entity_id: camera.c220_ceiling
+    data:
+      label: on_demand
+      include_recording: true
+    response_variable: create_response
+
+  - variables:
+      event_id: "{{ create_response['camera.c220_ceiling']['event_id'] }}"
+      started_at: "{{ now().timestamp() }}"
+
+  - wait_for_trigger:
+      - platform: state
+        entity_id: binary_sensor.tapo_c220_27c1_cell_motion_detection_2
+        to: "off"
+      - platform: state
+        entity_id: camera.c220_ceiling
+        to: "idle"
+    timeout:
+      seconds: 60
+    continue_on_timeout: true
+
+  - if:
+      - condition: template
+        value_template: >
+          {{ wait.trigger is not none and
+              wait.trigger.entity_id == 'camera.c220_ceiling' }}
+    then:
+      - action: frigate.end_event
+        target:
+          entity_id: camera.c220_ceiling
+        data:
+          event_id: "{{ event_id }}"
+      - stop: "Recording aborted — privacy switch turned off"
+
+  - delay:
+      seconds: >
+        {% set elapsed = now().timestamp() - started_at %}
+        {{ [10 - elapsed, 0] | max | int }}
+
+  - action: frigate.end_event
+    target:
+      entity_id: camera.c220_ceiling
+    data:
+      event_id: "{{ event_id }}"
+
+mode: single

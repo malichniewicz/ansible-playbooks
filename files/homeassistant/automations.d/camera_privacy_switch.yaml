@@ -1,0 +1,48 @@
+# Copyright (c) 2026 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+
+id: camera_privacy_switch
+alias: "Privacy switch for cameras"
+triggers:
+  - trigger: state
+    entity_id:
+      - switch.tapo_c220_27c1_privacy
+actions:
+  - if:
+      - condition: state
+        entity_id: switch.tapo_c220_27c1_privacy
+        state:
+          - "on"
+    then:
+      - action: camera.turn_off
+        target:
+          entity_id:
+            - camera.c220_ceiling_live
+            - camera.ra50x20_cabinet_live
+      - action: rest_command.go2rtc_switch_stream
+        data:
+          src: placeholder
+          name: c220_ceiling_live
+      - action: rest_command.go2rtc_switch_stream
+        data:
+          src: placeholder
+          name: ra50x20_cabinet_live
+    else:
+      - action: camera.turn_on
+        target:
+          entity_id:
+            - camera.c220_ceiling_live
+            - camera.ra50x20_cabinet_live
+      - action: rest_command.go2rtc_switch_stream
+        data:
+          src: c220_ceiling
+          name: c220_ceiling_live
+      - action: rest_command.go2rtc_switch_stream
+        data:
+          src: ra50x20_cabinet
+          name: ra50x20_cabinet_live
+mode: single

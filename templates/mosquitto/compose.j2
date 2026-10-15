@@ -11,10 +11,27 @@ services:
   mosquitto:
     container_name: mqtt
     image: eclipse-mosquitto
-    ports:
-      - 1883:1883
-      - 9001:9001
+    restart: unless-stopped
     volumes:
       - /opt/mosquitto/config:/mosquitto/config
       - /opt/mosquitto/data:/mosquitto/data
       - /opt/mosquitto/log:/mosquitto/log
+{% if exposed %}
+    # Expose container to Traefik
+    networks:
+      - {{ exposed_docker_network }}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.mosquitto.rule=HostSNI(`{{ dns_name.mosquitto }}`)"
+      - "traefik.tcp.routers.mosquitto.entrypoints=mqtt"
+      - "traefik.tcp.routers.mosquitto.tls=true"
+      - "traefik.tcp.routers.mosquitto.tls.certresolver=letencrypt"
+      - "traefik.tcp.services.mosquitto.loadbalancer.server.port=1883"
+networks:
+  {{ exposed_docker_network }}:
+    name: {{ exposed_docker_network }}
+    external: true
+    ipam:
+      config:
+        - subnet: "{{ exposed_docker_network_subnet }}"
+{% endif %}

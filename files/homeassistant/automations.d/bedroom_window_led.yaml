@@ -14,5 +14,5 @@ triggers:
 actions:
 - action: switch.toggle
   target:
-    entity_id: switch.bedroom_light_led_l1
+    entity_id: switch.0xf4b3b1fffef8679a_l1
 mode: single

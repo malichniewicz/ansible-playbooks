@@ -1,0 +1,33 @@
+# Copyright (c) 2026 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+
+alias: "MiBox ON"
+id: mibox_turns_on_projector_and_leds
+trigger:
+  - platform: state
+    entity_id: remote.mitv_afmu0
+    to: "on"
+  - platform: state
+    entity_id: remote.mitv_afmu0
+    from: "unavailable"
+    to: "idle"
+  - platform: state
+    entity_id: remote.mitv_afmu0
+    from: "off"
+    to: "on"
+action:
+  - service: switch.turn_on
+    target:
+      entity_id: switch.0xa4c1383d537c5120   # fingerbot
+
+  - service: light.turn_on
+    target:
+      entity_id: light.0xa4c1380207157e9a   # LED RGB
+    data:
+      rgb_color: [255, 190, 120]
+      brightness: 220
+mode: single

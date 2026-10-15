@@ -1,0 +1,36 @@
+# Copyright (c) 2026 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+
+alias: "MiBox playback"
+id: mibox_playing_turn_off_leds
+trigger:
+  - platform: state
+    entity_id: media_player.xiaomi_tv_box
+    to: "playing"
+    for:
+      seconds: 3   # skip preview
+condition:
+  - condition: template
+    value_template: >
+      {{ state_attr('remote.mitv_afmu0', 'current_activity') != 'com.google.android.apps.tv.launcherx' }}
+action:
+  - action: switch.turn_off
+    target:
+      entity_id: switch.0xf4b3b1fffef8679a_l1
+  - service: light.turn_on
+    target:
+      entity_id: light.0xa4c1380207157e9a
+    data:
+      brightness: 1
+      transition: 2
+
+  - delay: "00:00:02.5"
+
+  - service: light.turn_off
+    target:
+      entity_id: light.0xa4c1380207157e9a
+mode: single

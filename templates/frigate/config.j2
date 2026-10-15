@@ -1,0 +1,88 @@
+# Copyright (c) 2026 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+
+mqtt:
+  host: "mqtt"
+  user: "{{ frigate_mqtt_user }}"
+  password: "{{ frigate_mqtt_password }}"
+
+cameras:
+  ra50x20_cabinet:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path:
+            {{ frigate_camera_ra50x20_cabinet }}
+          roles:
+            - record
+      output_args:
+        record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c:v copy -c:a aac
+    detect:
+      width: 1280
+      height: 720
+    live:
+      streams:
+        HD: ra50x20_cabinet
+    record:
+      enabled: true
+      continuous:
+        days: 0      # no passive recording saved
+      motion:
+        days: 0      # no motion-only recording saved
+      alerts:
+        retain:
+          days: 7
+    mqtt:
+      enabled: true
+    onvif:
+      host: 127.0.0.1
+      port: 9999        # nothing listening here - Frigate will fail gracefully
+      user: ""
+      password: ""
+  c220_ceiling:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path:
+            rtsp://mali30-main:Fmb0HRY0Iau6Ag@c220.iot.alichniewicz.dev/stream1
+          roles:
+            - detect
+      output_args:
+        record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c:v copy -c:a aac
+    detect:
+      width: 1280
+      height: 720
+    live:
+      streams:
+        HD: c220_ceiling
+    record:
+      enabled: true
+      continuous:
+        days: 0      # no passive recording saved
+      motion:
+        days: 0      # no motion-only recording saved
+      alerts:
+        retain:
+          days: 7
+    onvif:
+      host: 127.0.0.1
+      port: 9999        # nothing listening here - Frigate will fail gracefully
+      user: ""
+      password: ""
+version: 0.17-0
+go2rtc:
+  streams:
+    placeholder:
+      - ffmpeg:/config/www/placeholder.mp4#video=h264#stream_loop=-1
+    ra50x20_cabinet:
+      - {{ frigate_camera_ra50x20_cabinet }}
+    c220_ceiling:
+      - {{ frigate_camera_c220_ceiling }}
+    ra50x20_cabinet_live:
+      - rtsp://frigate:8554/ra50x20_cabinet
+    c220_ceiling_live:
+      - rtsp://frigate:8554/c220_ceiling

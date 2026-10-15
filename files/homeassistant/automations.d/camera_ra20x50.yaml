@@ -1,0 +1,68 @@
+# Copyright (c) 2026 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+ 
+id: frigate_ra50x20_recording
+alias: "Frigate RA50X20 – motion triggered recording"
+trigger:
+  - platform: state
+    entity_id: binary_sensor.ra20x50_cabinet_motion_alarm
+    to: "on"
+condition:
+  - condition: not
+    conditions:
+      - condition: state
+        entity_id: camera.ra50x20_cabinet
+        state: "idle"
+action:
+  - action: frigate.create_event
+    target:
+      entity_id: camera.ra50x20_cabinet
+    data:
+      label: on_demand
+      include_recording: true
+    response_variable: create_response
+
+  - variables:
+      event_id: "{{ create_response['camera.ra50x20_cabinet']['event_id'] }}"
+      started_at: "{{ now().timestamp() }}"
+
+  - wait_for_trigger:
+      - platform: state
+        entity_id: binary_sensor.ra20x50_cabinet_motion_alarm
+        to: "off"
+      - platform: state
+        entity_id: camera.ra50x20_cabinet
+        to: "idle"
+    timeout:
+      seconds: 60
+    continue_on_timeout: true
+
+  - if:
+      - condition: template
+        value_template: >
+          {{ wait.trigger is not none and
+              wait.trigger.entity_id == 'camera.ra50x20_cabinet' }}
+    then:
+      - action: frigate.end_event
+        target:
+          entity_id: camera.ra50x20_cabinet
+        data:
+          event_id: "{{ event_id }}"
+      - stop: "Recording aborted — privacy switch turned off"
+
+  - delay:
+      seconds: >
+        {% set elapsed = now().timestamp() - started_at %}
+        {{ [10 - elapsed, 0] | max | int }}
+
+  - action: frigate.end_event
+    target:
+      entity_id: camera.ra50x20_cabinet
+    data:
+      event_id: "{{ event_id }}"
+
+mode: single

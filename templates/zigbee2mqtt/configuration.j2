@@ -1,7 +1,9 @@
 version: 4
+advanced:
+  channel: 25
 mqtt:
   base_topic: {{ mqtt_topic }}
-  server: mqtt://{{ hostvars["home-assistant"].ansible_host }}:1883
+  server: mqtts://{{ dns_name.mosquitto }}:1883
   user: {{ mqtt_user }}
   password: {{ mqtt_password }}
 serial:
@@ -14,3 +16,5 @@ frontend:
   port: 8080
 homeassistant:
   enabled: true
+ota:
+  zigbee_ota_override_index_location: https://raw.githubusercontent.com/romasku/tuya-zigbee-switch/refs/heads/main/zigbee2mqtt/ota/index_end_device.json

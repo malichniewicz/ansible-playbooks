@@ -28,10 +28,37 @@
        compose_file_template: zigbee2mqtt/compose.j2
        dirs:
         - /opt/zigbee2mqtt/data
+        - /opt/zigbee2mqtt/data/external_converters
        config_files:
         - src: zigbee2mqtt/configuration.j2
           dest: /opt/zigbee2mqtt/data/configuration.yaml
           type: template
+        - src: zigbee2mqtt/converters/switch_custom.js
+          dest: /opt/zigbee2mqtt/data/external_converters/switch_custom.js
+          type: file
+        - src: zigbee2mqtt/converters/tuya_with_ota.js
+          dest: /opt/zigbee2mqtt/data/external_converters/tuya_with_ota.js
+          type: file
+     - role: setup_docker_compose
+       container_name: "matter-server"
+       workspace: /opt/matter-server
+       compose_file_template: matter-server/compose.j2
+       dirs:
+        - /opt/matter-server/data
+     - role: setup_docker_compose
+       container_name: "frigate"
+       workspace: /opt/frigate
+       compose_file_template: frigate/compose.j2
+       dirs:
+        - /opt/frigate/config
+        - /opt/frigate/recordings
+        - /opt/frigate/config/www
+       config_files:
+        - src: frigate/config.j2
+          dest: /opt/frigate/config/config.yaml
+          type: template
+        - src: frigate/placeholder.mp4
+          dest: /opt/frigate/config/www/placeholder.mp4
      - role: setup_docker_compose
        container_name: "homeassistant"
        workspace: /opt/homeassistant
@@ -42,12 +69,35 @@
         - /opt/homeassistant/config/scripts.d
         - /opt/homeassistant/config/scenes.d
         - /opt/homeassistant/config/packages.d
-        - /opt/homeassistant/config/sensors.d
        config_files:
         - src: homeassistant/configuration.j2
           dest: /opt/homeassistant/config/configuration.yaml
-          type: template
+          type: template  
         - src: homeassistant/automations.d/bedroom_window_led.yaml
           dest: /opt/homeassistant/config/automations.d/bedroom_window_led.yaml
-        - src: homeassistant/sensors.d/nightstate.yaml
-          dest: /opt/homeassistant/config/sensors.d/nightstate.yaml
+        - src: homeassistant/automations.d/bedroom_led_switch.yaml
+          dest: /opt/homeassistant/config/automations.d/bedroom_led_switch.yaml
+        - src: homeassistant/packages.d/nightstate.yaml
+          dest: /opt/homeassistant/config/packages.d/nightstate.yaml
+        - src: homeassistant/automations.d/mibox_on.yaml
+          dest: /opt/homeassistant/config/automations.d/mibox_on.yaml
+        - src: homeassistant/automations.d/mibox_off.yaml
+          dest: /opt/homeassistant/config/automations.d/mibox_off.yaml
+        - src: homeassistant/automations.d/mibox_playback.yaml
+          dest: /opt/homeassistant/config/automations.d/mibox_playback.yaml
+        - src: homeassistant/automations.d/mibox_pause.yaml
+          dest: /opt/homeassistant/config/automations.d/mibox_pause.yaml
+        - src: homeassistant/automations.d/mibox_main.yaml
+          dest: /opt/homeassistant/config/automations.d/mibox_main.yaml
+        - src: homeassistant/packages.d/ffmpeg.yaml
+          dest: /opt/homeassistant/config/packages.d/ffmpeg.yaml
+        - src: homeassistant/packages.d/frigate.yaml
+          dest: /opt/homeassistant/config/packages.d/frigate.yaml
+        - src: homeassistant/automations.d/camera_ra20x50.yaml
+          dest: /opt/homeassistant/config/automations.d/camera_ra20x50.yaml
+        - src: homeassistant/automations.d/camera_c220.yaml
+          dest: /opt/homeassistant/config/automations.d/camera_c220.yaml
+        - src: homeassistant/automations.d/camera_privacy_switch.yaml
+          dest: /opt/homeassistant/config/automations.d/camera_privacy_switch.yaml
+        - src: homeassistant/packages.d/xiaomi_miot.yaml
+          dest: /opt/homeassistant/config/packages.d/xiaomi_miot.yaml
