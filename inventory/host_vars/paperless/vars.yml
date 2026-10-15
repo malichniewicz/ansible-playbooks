@@ -7,5 +7,4 @@
 ---
 platform: "linux"
 
-exposed:
-  paperless: True
+exposed: true

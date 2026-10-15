@@ -35,7 +35,7 @@ services:
       PAPERLESS_TIKA_ENDPOINT: http://tika:9998
     networks:
       - paperless
-{% if exposed.paperless %}
+{% if exposed %}
       # Expose container to Traefik
       - {{ exposed_docker_network }}
     labels:
