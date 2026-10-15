@@ -32,13 +32,13 @@ dns:
   ratelimit_whitelist: []
   refuse_any: true
   upstream_dns:
-    - https://dns10.quad9.net/dns-query
-  upstream_dns_file: ""
+    - tls://dns.quad9.net
+    - tls://one.one.one.one
+    - "[/alichniewicz.dev/]172.16.31.1"
   bootstrap_dns:
+    - 172.16.31.1
     - 9.9.9.10
     - 149.112.112.10
-    - 2620:fe::10
-    - 2620:fe::fe:10
   fallback_dns: []
   upstream_mode: load_balance
   fastest_timeout: 1s
@@ -68,7 +68,10 @@ dns:
   ipset_file: ""
   bootstrap_prefer_ipv6: false
   upstream_timeout: 10s
-  private_networks: []
+  private_networks:
+    - 192.168.0.0/16
+    - 172.16.0.0/12
+    - 10.0.0.0/8
   use_private_ptr_resolvers: false
   local_ptr_upstreams: []
   use_dns64: false
@@ -167,6 +170,20 @@ filtering:
       answer: 172.16.31.2
     - domain: {{ hostvars['core-services']['dns_name']['traefik'] }}
       answer: 172.16.31.2
+    - domain: {{ hostvars['core-services']['dns_name']['paperless'] }}
+      answer: 192.168.10.2
+    - domain: {{ hostvars['home-assistant']['dns_name']['mosquitto'] }}
+      answer: 192.168.50.2
+    - domain: {{ hostvars['monitoring']['dns_name']['grafana'] }}
+      answer: 192.168.50.2
+    - domain: {{ hostvars['monitoring']['dns_name']['mktxp'] }}
+      answer: 172.16.31.2
+    - domain: {{ hostvars['monitoring']['dns_name']['prometheus'] }}
+      answer: 172.16.31.2
+    - domain: epson.alichniewicz.dev
+      answer: 192.168.50.20
+    - domain: frigate.alichniewicz.dev
+      answer: 192.168.50.2
   safe_fs_patterns:
     - /opt/adguardhome/work/userfilters/*
   safebrowsing_cache_size: 1048576

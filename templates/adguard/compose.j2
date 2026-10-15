@@ -9,6 +9,7 @@ name: adguardhome
 
 services:
   adguardhome:
+    container_name: adguard
     image: adguard/adguardhome
     ports:
       - 53:53/tcp # plain dns over tcp
@@ -17,6 +18,7 @@ services:
     volumes:
       - ./conf:/opt/adguardhome/conf
       - ./work:/opt/adguardhome/work
+    restart: unless-stopped
 {% if exposed %}
     # Expose container to Traefik
     networks:
