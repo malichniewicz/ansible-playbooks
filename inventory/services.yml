@@ -13,5 +13,7 @@ services:
       ansible_host: 172.16.31.2
     home-assistant:
       ansible_host: 172.16.31.2
+    monitoring:
+      ansible_host: 172.16.31.2
     paperless:
       ansible_host: 172.16.31.2
