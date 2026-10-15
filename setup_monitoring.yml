@@ -1,0 +1,49 @@
+# Copyright (c) 2025 Michał Alichniewicz
+#
+# This file is licensed under the MIT License.
+# See the LICENSE file in the repository root for more information.
+#
+# SPDX-License-Identifier: MIT
+---
+ - hosts: monitoring
+   gather_facts: true
+   become: true
+   roles:
+     - role: setup_docker_compose
+       container_name: "monitoring"
+       workspace: /opt/monitoring
+       compose_file_template: monitoring/compose.j2
+       dirs:
+        - /opt/monitoring/prometheus/config
+        - /opt/monitoring/providers
+        - /opt/monitoring/providers/mktxp
+        - /opt/monitoring/providers/mktxp/data
+        - /opt/monitoring/grafana
+        - /opt/monitoring/grafana/provisioning
+        - /opt/monitoring/grafana/provisioning/datasources
+        - /opt/monitoring/grafana/provisioning/dashboards
+        - /opt/monitoring/grafana/provisioning/dashboards/mikrotik
+        - /opt/monitoring/grafana/provisioning/dashboards/node
+       config_files:
+        - src: monitoring/prometheus/prometheus.j2
+          dest: /opt/monitoring/prometheus/config/prometheus.yml
+          type: template
+        - src: monitoring/mktxp/mktxp.j2
+          dest: /opt/monitoring/providers/mktxp/data/mktxp.conf
+          type: template
+        - src: monitoring/mktxp/_mktxp.j2
+          dest: /opt/monitoring/providers/mktxp/data/_mktxp.conf
+          type: template
+        - src: monitoring/grafana/datasources/datasource.j2
+          dest: /opt/monitoring/grafana/provisioning/datasources/datasource.yml
+          type: template
+        - src: monitoring/grafana/dashboards/dashboard.j2
+          dest: /opt/monitoring/grafana/provisioning/dashboards/dashboard.yml
+          type: template
+        - src: monitoring/grafana/custom.ini.j2
+          dest: /opt/monitoring/grafana/custom.ini
+          type: template
+        - src: monitoring/grafana/dashboards/mikrotik/monitor.json
+          dest: /opt/monitoring/grafana/provisioning/dashboards/mikrotik/monitor.json
+        - src: monitoring/grafana/dashboards/node/monitor.json
+          dest: /opt/monitoring/grafana/provisioning/dashboards/node/monitor.json
